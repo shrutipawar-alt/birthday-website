@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday ❤️</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+
+    body{
+      margin:0;
+      padding:0;
+      overflow-x:hidden;
+      font-family:sans-serif;
+      background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+    }
+
+    /* ❤️ FLOATING HEART BACKGROUND */
+    .heart {
+      position: fixed;
+      bottom: -20px;
+      font-size: 20px;
+      color: rgba(255, 255, 255, 0.8);
+      animation: floatUp linear infinite;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-110vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    .floating{ animation:float 3s ease-in-out infinite; }
+
+    @keyframes float{
+      0%{transform:translateY(0);}
+      50%{transform:translateY(-12px);}
+      100%{transform:translateY(0);}
+    }
+
+    .fadeIn{ animation:fade 1.5s ease; }
+
+    @keyframes fade{
+      from{opacity:0; transform:scale(0.8);}
+      to{opacity:1; transform:scale(1);}
+    }
+
+    .gallery img{ transition:0.4s; }
+
+    .gallery img:hover{ transform:scale(1.08); }
+
+    #countdown-screen{
+      position:fixed;
+      width:100%;
+      height:100%;
+      background:#ff8fb1;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      z-index:999;
+      color:white;
+      font-size:100px;
+      font-weight:bold;
+    }
+
+    video{ object-fit:cover; }
+
+    /* keep content above hearts */
+    .content{
+      position: relative;
+      z-index: 10;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<!-- ❤️ HEART BACKGROUND CONTAINER -->
+<div id="heart-container"></div>
+
+<!-- Countdown -->
+<div id="countdown-screen">3</div>
+
+<!-- Intro -->
+<div id="intro-screen" class="hidden min-h-screen flex flex-col items-center justify-center text-center p-5 content">
+
+  <img src="main.jpg"
+    class="w-56 h-56 rounded-full border-4 border-white shadow-2xl object-cover floating">
+
+  <h2 class="text-3xl text-white mt-3 fadeIn">
+    Happy Birthday 
+    <span class="font-bold text-yellow-200 drop-shadow-lg">Favourite Person ❤️</span>
+  </h2>
+</div>
+
+<!-- Video -->
+<div id="video-section" class="hidden min-h-screen flex flex-col items-center justify-center p-5 content">
+
+  <h2 class="text-3xl text-white font-bold mb-5">Special Video 🎥</h2>
+
+  <video autoplay controls class="w-[90%] max-w-md rounded-3xl shadow-2xl border-4 border-white">
+    <source src="birthday.mp4" type="video/mp4">
+  </video>
+
+</div>
+
+<!-- Loading -->
+<div id="loading-screen" class="hidden min-h-screen flex items-center justify-center content">
+
+  <h1 class="text-5xl text-white font-bold animate-pulse text-center">
+    Loading Surprise... ✨
+  </h1>
+
+</div>
+
+<!-- Main -->
+<div id="main-content" class="hidden min-h-screen flex flex-col items-center justify-center p-5 content">
+
+  <button onclick="showSurprise()"
+    class="bg-white text-pink-500 font-bold px-8 py-4 rounded-full shadow-2xl text-2xl hover:scale-105 transition">
+
+    Click Me 💖
+
+  </button>
+
+  <p id="surprise" class="hidden text-white mt-8 text-3xl font-bold text-center fadeIn">
+    You are the most special person 🌸
+  </p>
+
+  <h2 class="text-3xl text-white font-bold mt-12 mb-5">
+    Special Moments 📸
+  </h2>
+
+  <div class="gallery grid grid-cols-2 gap-4 max-w-lg">
+
+    <img src="photo1.jfif" class="gallery-img hidden rounded-2xl shadow-lg h-40 w-full object-cover">
+    <img src="photo2.jfif" class="gallery-img hidden rounded-2xl shadow-lg h-40 w-full object-cover">
+    <img src="photo3.jfif" class="gallery-img hidden rounded-2xl shadow-lg h-40 w-full object-cover">
+    <img src="photo4.jfif" class="gallery-img hidden rounded-2xl shadow-lg h-40 w-full object-cover">
+
+  </div>
+
+</div>
+
+<!-- Music -->
+<audio autoplay loop>
+  <source src="music.mp3" type="audio/mp3">
+</audio>
+
+<script>
+
+const countdown = document.getElementById("countdown-screen");
+const intro = document.getElementById("intro-screen");
+const video = document.getElementById("video-section");
+const loading = document.getElementById("loading-screen");
+const main = document.getElementById("main-content");
+
+let count = 3;
+
+const timer = setInterval(() => {
+  count--;
+
+  if(count > 0){
+    countdown.innerText = count;
+  }else{
+    clearInterval(timer);
+    countdown.style.display = "none";
+
+    intro.classList.remove("hidden");
+
+    confetti({ particleCount:200, spread:120 });
+
+    setTimeout(() => {
+      intro.classList.add("hidden");
+      video.classList.remove("hidden");
+
+      setTimeout(() => {
+        video.classList.add("hidden");
+        loading.classList.remove("hidden");
+
+        setTimeout(() => {
+          loading.classList.add("hidden");
+          main.classList.remove("hidden");
+
+          startSlideshow();
+
+        },3000);
+
+      },8000);
+
+    },4000);
+
+  }
+
+},1000);
+
+
+// 🎞️ SLIDESHOW
+let imgIndex = 0;
+
+function startSlideshow(){
+  const images = document.querySelectorAll(".gallery-img");
+
+  setInterval(() => {
+    if(imgIndex < images.length){
+      images[imgIndex].classList.remove("hidden");
+      images[imgIndex].classList.add("fadeIn");
+      imgIndex++;
+    }
+  },1500);
+}
+
+
+// 💖 BUTTON
+function showSurprise(){
+  document.getElementById("surprise").classList.remove("hidden");
+  confetti({ particleCount:150, spread:150 });
+}
+
+
+// ❤️ FLOATING HEARTS GENERATOR
+function createHearts(){
+  const container = document.getElementById("heart-container");
+
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "❤️";
+
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+    heart.style.animationDuration = (Math.random() * 3 + 3) + "s";
+
+    container.appendChild(heart);
+
+    setTimeout(() => {
+      heart.remove();
+    }, 6000);
+
+  }, 300);
+}
+
+createHearts();
+
+</script>
+
+</body>
+</html>
