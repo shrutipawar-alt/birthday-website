@@ -60,7 +60,7 @@ Hosted on:
 
 Designed and developed with passion, creativity, and attention to modern web design aesthetics.
 
-Author
+##Author
 Shruti Pawar
 
 
